@@ -1,14 +1,9 @@
-import chromium from 'chrome-aws-lambda';
+import playwright from 'playwright-aws-lambda';
 
 const scrape = async url => {
-  const browser = await chromium.puppeteer.launch({
-    args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: false,
-    ignoreHTTPSErrors: true,
-  });
-  const page = await browser.newPage();
+const browser = await playwright.launchChromium();
+const context = await browser.newContext();
+  const page = await context.newPage();
 
   await page.goto(url);
   await page.waitForNetworkIdle();

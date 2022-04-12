@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chrome-aws-lambda": "^10.1.0",
-    "puppeteer-core": "^10.1.0"
+    "playwright-aws-lambda": "^0.7.0",
+    "playwright-core": "^1.21.0"
   }
 }
