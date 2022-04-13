@@ -1,12 +1,14 @@
-import playwright from 'playwright-aws-lambda';
+const playwright = require('playwright-aws-lambda');
 
 const scrape = async url => {
-const browser = await playwright.launchChromium();
+const browser = await playwright.launchChromium({
+    headless: false,
+});
 const context = await browser.newContext();
   const page = await context.newPage();
-
-  await page.goto(url);
-  await page.waitForNetworkIdle();
+  console.log('before');
+  await page.goto(url, { waitUntil: 'load', referer: url });
+  console.log('after');
   const ogFields = await page
     .evaluate(() => {
       const description =
@@ -32,11 +34,13 @@ const context = await browser.newContext();
       return { description, title, type, image, url };
     })
     .catch(e => {
-      browser.close();
+        browser.close();
       return {};
     });
+  const title = await page.title();
+  const buffer = await page.screenshot();
   browser.close();
-  return ogFields;
+  return { ...ogFields, title, screenshot: buffer.toString('base64') };
 };
 
 const meta = async (req, res) => {
